@@ -1,7 +1,6 @@
 from rest_framework import generics
 from api.models import Team, Player, Card
 from api.serializers import CardSerializer, PlayerSerializer, TeamSerializer
-from django.shortcuts import get_object_or_404
 
 class CardDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Card.objects.all()

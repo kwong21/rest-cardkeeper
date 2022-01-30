@@ -35,7 +35,6 @@ class PlayerAPITestCase(APITestCase):
         response = self._post_test_card()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Card.objects.count(), 1)
-    
         
     def test_if_player_exists_do_not_add(self):
         """
@@ -51,6 +50,23 @@ class PlayerAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Player.objects.count(), 1)
     
+    def test_player_filter_args(self):
+        """
+        Test filter_args are being respected
+        """
+        
+        self._post_test_team()
+        self._post_test_player()
+
+        qs = "team=1"
+        req = '?'.join((self.player_url, qs))
+        
+        response = self.client.get(req)
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(json.loads(response.content)), 1)
+        
+
     def test_team_filter_args(self):
         """
         Test filter_args are being respected
@@ -69,8 +85,8 @@ class PlayerAPITestCase(APITestCase):
         req = '?'.join((self.team_url, qs))
         
         response = self.client.get(req)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
         
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(json.loads(response.content)), 1)
         
     def test_if_exists_do_not_add_team(self):
